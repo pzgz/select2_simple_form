@@ -41,7 +41,15 @@ var Select2SimpleForm = (function($) {
 
     // Allow for HTML markup to show properly in the resulting options
     if (options.allow_html) {
-      var stripDiacritics = window.Select2.util.stripDiacritics;
+      var stripDiacritics = function (text) {
+        // Used 'uni range + named function' from http://jsperf.com/diacritics/18
+        function match(a) {
+          return DIACRITICS[a] || a;
+        }
+
+        return text.replace(/[^\u0000-\u007E]/g, match);
+      };
+          
 
       // We're going to use a slight variation of Select2 markMatch function
       // to avoid matches inside html tags:
